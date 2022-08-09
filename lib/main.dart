@@ -91,6 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
           LitoThermometer(
             setTemperature: setTemp,
             currentTemperature: currentTemp,
+            topLabelText: 'Hola',
+            bottomLabelText: 'Amigo',
             onChangeEnd: (value) {
               setState(() {
                 setTemp = value;

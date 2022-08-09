@@ -6,6 +6,8 @@ CircularSliderAppearance litoCSAppearance(
   bool isInner = false,
   int oTemperature = 20,
   int iTemperature = 19,
+  final String? topLabelText,
+  final String? bottomLabelText,
 }) {
   return CircularSliderAppearance(
     infoProperties: InfoProperties(
@@ -13,9 +15,9 @@ CircularSliderAppearance litoCSAppearance(
         final roundedValue = value.ceil().toInt().toString();
         return isInner ? '' : '$roundedValue°C';
       },
-      topLabelText: isInner ? '' : 'Temperature',
+      topLabelText: isInner ? '' : topLabelText,
       // topLabelStyle: TextStyle(fontFamily: ''),
-      bottomLabelText: isInner ? '' : 'Good day',
+      bottomLabelText: isInner ? '' : bottomLabelText,
     ),
     customWidths: CustomSliderWidths(
       progressBarWidth: isInner ? 10 : 15,

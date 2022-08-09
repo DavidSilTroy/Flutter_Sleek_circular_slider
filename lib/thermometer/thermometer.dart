@@ -10,6 +10,8 @@ class LitoThermometer extends StatefulWidget {
   final OnChange? onChangeEnd;
   final double currentTemperature;
   final double setTemperature;
+  final String? topLabelText;
+  final String? bottomLabelText;
   final double minTemperature = 15;
   final double maxTemperature = 35;
 
@@ -19,7 +21,9 @@ class LitoThermometer extends StatefulWidget {
       this.onChangeStart,
       this.onChangeEnd,
       required this.currentTemperature,
-      required this.setTemperature})
+      required this.setTemperature,
+      this.topLabelText,
+      this.bottomLabelText})
       : assert(currentTemperature >= 15),
         assert(setTemperature >= 15),
         assert(currentTemperature <= 35),
@@ -54,6 +58,8 @@ class _LitoThermometer extends State<LitoThermometer>
         _litoCSApareance1 = litoCSAppearance(
           _glowingAnimation,
           isInner: false,
+          topLabelText: widget.topLabelText,
+          bottomLabelText: widget.bottomLabelText,
         );
       });
     });
@@ -63,6 +69,8 @@ class _LitoThermometer extends State<LitoThermometer>
     _litoCSApareance1 = litoCSAppearance(
       _glowingAnimation,
       isInner: false,
+      topLabelText: widget.topLabelText,
+      bottomLabelText: widget.bottomLabelText,
     );
 
     super.initState();
