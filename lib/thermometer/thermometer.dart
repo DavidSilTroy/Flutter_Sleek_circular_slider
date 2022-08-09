@@ -44,22 +44,27 @@ class _LitoThermometer extends State<LitoThermometer>
 
   int slowGlowDuration = 2000;
   int fastGlowDuration = 500;
+  double setTemperature = 0;
+  Color progressBarColor = Colors.amberAccent;
 
   @override
   void initState() {
+    setTemperature = widget.setTemperature;
+
     _glowingAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: slowGlowDuration),
     );
     _glowingAnimation =
-        Tween(begin: 20.0, end: 55.0).animate(_glowingAnimationController);
+        Tween(begin: 20.0, end: 26.0).animate(_glowingAnimationController);
     _glowingAnimationController.addListener(() {
       setState(() {
         _litoCSApareance1 = litoCSAppearance(
           _glowingAnimation,
           isInner: false,
+          outerBarColor: progressBarColor,
           topLabelText: widget.topLabelText,
-          bottomLabelText: widget.bottomLabelText,
+          bottomLabelText: widget.bottomLabelText ?? decideBottomLabelText(),
         );
       });
     });
@@ -69,8 +74,9 @@ class _LitoThermometer extends State<LitoThermometer>
     _litoCSApareance1 = litoCSAppearance(
       _glowingAnimation,
       isInner: false,
+      outerBarColor: progressBarColor,
       topLabelText: widget.topLabelText,
-      bottomLabelText: widget.bottomLabelText,
+      bottomLabelText: widget.bottomLabelText ?? decideBottomLabelText(),
     );
 
     super.initState();
@@ -104,11 +110,30 @@ class _LitoThermometer extends State<LitoThermometer>
   }
 
   Widget litoThermometer() {
-    return Stack(
-      alignment: AlignmentDirectional.center,
+    return Column(
       children: [
-        innerSleekCircularSlider(widget.currentTemperature),
-        outerSleekCircularSlider(widget.setTemperature),
+        Stack(
+          children: [
+            Align(
+              alignment: AlignmentDirectional.center,
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  innerSleekCircularSlider(widget.currentTemperature),
+                  outerSleekCircularSlider(widget.setTemperature),
+                ],
+              ),
+            ),
+            Align(
+              alignment: AlignmentDirectional.topCenter,
+              child: rightThermometerIcon(22),
+            )
+          ],
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 15),
+          child: Text('Set Temperature: ${setTemperature.ceil()}°C'),
+        )
       ],
     );
   }
@@ -117,6 +142,10 @@ class _LitoThermometer extends State<LitoThermometer>
     return SleekCircularSlider(
       onChange: ((value) {
         log('CHANGING: ${value.toString()}');
+        setState(() {
+          setTemperature = value;
+          progressBarColor = decideBarColor(value);
+        });
         if (widget.onChange != null) {
           widget.onChange!(value);
         }
@@ -151,5 +180,69 @@ class _LitoThermometer extends State<LitoThermometer>
       initialValue: temperature,
     );
   }
+
+  Widget rightThermometerIcon(double temperature) {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 250,
+      ),
+      child: currentIcon(),
+    );
+  }
+
+  Icon currentIcon() {
+    final t1 = widget.currentTemperature;
+    final t2 = widget.setTemperature;
+    Color iconcolor = decideBarColor(t2);
+    const iconcolor2 = Color.fromARGB(72, 33, 149, 243);
+    double iconsize = 40;
+    Icon currentIcon;
+    if (t1 > t2) {
+      currentIcon = Icon(
+        Icons.ac_unit,
+        color: iconcolor,
+        size: iconsize,
+      );
+    } else {
+      if (t1 == t2) {
+        if (t1 >= 22) {
+          currentIcon = Icon(
+            Icons.sunny,
+            color: iconcolor2,
+            size: iconsize,
+          );
+        } else {
+          currentIcon = Icon(
+            Icons.ac_unit,
+            color: iconcolor2,
+            size: iconsize,
+          );
+        }
+      } else {
+        currentIcon = Icon(
+          Icons.sunny,
+          color: iconcolor,
+          size: iconsize,
+        );
+      }
+    }
+    // = t1 > t2 ? Icons.ac_unit : Icons.accessible;
+    return currentIcon;
+  }
+
+  String decideBottomLabelText() {
+    final t1 = widget.currentTemperature;
+    final t2 = widget.setTemperature;
+    if (t1 > t2) {
+      return 'Cooling';
+    } else {
+      if (t1 == t2) {
+        return 'Current Temperature';
+      } else {
+        return 'Heating';
+      }
+    }
+  }
+
 //
 }

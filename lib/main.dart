@@ -88,18 +88,21 @@ class _MyHomePageState extends State<MyHomePage> {
             'Here you should be watching an awesome thermometer:',
             textAlign: TextAlign.center,
           ),
-          LitoThermometer(
-            setTemperature: setTemp,
-            currentTemperature: currentTemp,
-            topLabelText: 'Hola',
-            bottomLabelText: 'Amigo',
-            onChangeEnd: (value) {
-              setState(() {
-                setTemp = value;
-              });
-              log('Main: ${value.toString()}');
-              startTempChange();
-            },
+          Container(
+            margin: const EdgeInsets.only(
+              top: 100,
+            ),
+            child: LitoThermometer(
+              setTemperature: setTemp,
+              currentTemperature: currentTemp,
+              onChangeEnd: (value) {
+                setState(() {
+                  setTemp = value;
+                });
+                log('Main: ${value.toString()}');
+                startTempChange();
+              },
+            ),
           ),
         ],
       ),
