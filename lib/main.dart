@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sleek_circular_slider/doubleCircularSlider/double_sleek.dart';
 
 import 'thermometer/thermometer.dart';
 
@@ -36,6 +37,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   double currentTemp = 17;
   double setTemp = 20;
+  double currentValue = 55;
+  double setValue = 88;
   late Timer _timer;
 
   void startTempChange() {
@@ -43,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
-        log(currentTemp.toString());
+        // log(currentTemp.toString());
         if (currentTemp == setTemp) {
           setState(() {
             //here the magice happens
@@ -70,6 +73,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void startValueChange() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        // log(currentValue.toString());
+        if (currentValue == setValue) {
+          setState(() {
+            //here the magice happens
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            if (currentValue > setValue) {
+              if (currentValue - setValue < 1) {
+                currentValue = setValue;
+              } else {
+                currentValue--;
+              }
+            } else {
+              if (setValue - currentValue < 1) {
+                currentValue = setValue;
+              } else {
+                currentValue++;
+              }
+            }
+          });
+        }
+      },
+    );
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -84,9 +119,66 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.deepPurple,
+                  ),
+                  height: 80,
+                  width: 80,
+                  child: Image.asset(
+                    'assets/icons/solar_energy_lito.png',
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.deepPurple,
+                  ),
+                  height: 80,
+                  width: 80,
+                  child: Image.asset(
+                    'assets/icons/solar_water_lito.png',
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
           const Text(
             'Here you should be watching an awesome thermometer:',
             textAlign: TextAlign.center,
+          ),
+          Container(
+            margin: const EdgeInsets.only(
+              top: 100,
+            ),
+            child: LitoSleekCircularSlider(
+              outerValue: setValue,
+              innerValue: currentValue,
+              bottomLabelText: 'Energy efficiency',
+              extraLabelText: '93% autonomy',
+              // isSecondDobleCircular: true,
+              icon: const Icon(
+                Icons.view_in_ar_outlined,
+                color: Colors.amber,
+              ),
+              maxValue: 500,
+              // onChangeEnd: (value) {
+              //   setState(() {
+              //     setValue = value;
+              //   });
+              //   log('Main: ${value.toString()}');
+              //   startValueChange();
+              // },
+            ),
           ),
           Container(
             margin: const EdgeInsets.only(
@@ -99,7 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   setTemp = value;
                 });
-                log('Main: ${value.toString()}');
+                // log('Main: ${value.toString()}');
                 startTempChange();
               },
             ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 CircularSliderAppearance litoCSAppearance(
@@ -63,9 +62,9 @@ Color decideBarColor(double value) {
     return const Color.fromARGB(255, 7, 61, 237);
   } else {
     if (value > 27) {
-      return Color.fromARGB(255, 245, 255, 46);
+      return const Color.fromARGB(255, 245, 255, 46);
     } else {
-      return Color.fromARGB(255, 58, 182, 58);
+      return const Color.fromARGB(255, 58, 182, 58);
     }
   }
 }
